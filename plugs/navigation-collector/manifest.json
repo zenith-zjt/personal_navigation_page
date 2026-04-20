@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "个人导航收藏助手",
+  "version": "1.0.0",
+  "description": "把当前 Chrome 标签页收藏到个人导航页。",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_title": "收藏到个人导航",
+    "default_popup": "popup.html"
+  }
+}

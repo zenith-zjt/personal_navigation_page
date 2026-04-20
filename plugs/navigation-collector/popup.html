@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>个人导航收藏助手</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <h1>收藏到个人导航</h1>
+
+      <label>
+        导航页地址
+        <input id="navUrl" type="url" placeholder="http://127.0.0.1:3000" />
+      </label>
+
+      <label>
+        分组
+        <input id="group" type="text" value="导入" />
+      </label>
+
+      <label>
+        标签
+        <input id="tags" type="text" value="导入" />
+      </label>
+
+      <label>
+        Tab
+        <select id="bucket">
+          <option value="favorites">常用链接</option>
+          <option value="watching" selected>正在看</option>
+          <option value="later">稍后看</option>
+        </select>
+      </label>
+
+      <button id="save" type="button">收藏当前页面</button>
+      <p id="status" role="status"></p>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
