@@ -39,6 +39,7 @@ standalone-server*.log
 # local app data and generated verification artifacts
 /data/*.json
 /screenshots/
+/log/
 
 # env files (can opt-in for committing if needed)
 .env*
@@ -49,3 +50,4 @@ standalone-server*.log
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
