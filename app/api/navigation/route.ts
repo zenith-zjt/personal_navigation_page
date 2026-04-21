@@ -18,6 +18,7 @@ type PatchBody =
   | { action: "add-link"; link: Omit<NavLink, "id" | "createdAt" | "updatedAt" | "order"> }
   | { action: "update-link"; link: NavLink }
   | { action: "delete-link"; id: string }
+  | { action: "rename-group"; bucket: NavLink["bucket"]; oldGroup: string; newGroup: string }
   | { action: "move-link"; id: string; bucket: NavLink["bucket"] }
   | { action: "reorder-links"; ids: string[] }
   | { action: "layout-links"; items: Array<{ id: string; bucket: NavLink["bucket"]; order: number }> }
@@ -60,6 +61,14 @@ export async function PUT(request: Request) {
 
     if (body.action === "delete-link") {
       db.links = db.links.filter((link) => link.id !== body.id);
+    }
+
+    if (body.action === "rename-group") {
+      db.links = db.links.map((link) =>
+        link.bucket === body.bucket && link.group === body.oldGroup
+          ? { ...link, group: body.newGroup, updatedAt: new Date().toISOString() }
+          : link,
+      );
     }
 
     if (body.action === "move-link") {
