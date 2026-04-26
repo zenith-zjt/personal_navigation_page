@@ -51,7 +51,10 @@ jobs:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.REMOTE_PRIVATE_KEY }}
+          envs: IMAGE_TAG=${{ steps.vars.outputs.sha_short }}
           script: |
+            export IMAGE_TAG=$IMAGE_TAG
             cd ${{ secrets.REMOTE_PATH }}
-            docker compose up -d --pull always --force-recreate
+            docker compose pull
+            docker compose up -d --remove-orphans
             docker image prune -f

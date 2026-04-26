@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   nextjs-app:
-    image: zenithzjt/personal_navigation_page:latest
+    image: zenithzjt/personal_navigation_page:${IMAGE_TAG:-latest}
     container_name: personal_navigation_page
     restart: unless-stopped
     ports:
