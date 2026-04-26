@@ -51,10 +51,12 @@ jobs:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.REMOTE_PRIVATE_KEY }}
-          envs: IMAGE_TAG=${{ steps.vars.outputs.sha_short }}
           script: |
-            export IMAGE_TAG=$IMAGE_TAG
             cd ${{ secrets.REMOTE_PATH }}
+            echo "Current IMAGE_TAG is: ${IMAGE_TAG}"
+            docker images zenithzjt/personal_navigation_page --format "table {{.Tag}}\t{{.ID}}\t{{.CreatedAt}}"
+            export IMAGE_TAG="${{ needs.build.outputs.sha_short }}"
+            echo "After export, IMAGE_TAG is: ${IMAGE_TAG}"
             docker compose pull
-            docker compose up -d --remove-orphans
+            docker compose up -d --force-recreate
             docker image prune -f
