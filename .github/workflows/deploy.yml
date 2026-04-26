@@ -9,6 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: product
+    outputs:
+      sha_short: ${{ steps.vars.outputs.sha_short }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
