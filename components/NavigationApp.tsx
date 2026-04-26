@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,6 +40,7 @@ export default function NavigationApp() {
   const [activeBucket, setActiveBucket] = useState<LinkBucket>("favorites");
   const [addUsesCustomGroup, setAddUsesCustomGroup] = useState(false);
   const [editUsesCustomGroup, setEditUsesCustomGroup] = useState(false);
+  const importJsonInputRef = useRef<HTMLInputElement | null>(null);
 
   const addForm = useForm<LinkFormValues>({
     resolver: zodResolver(linkFormSchema),
@@ -240,6 +241,47 @@ export default function NavigationApp() {
     setMessage(`已导入 ${payload.imported} 个链接，跳过 ${payload.skipped} 个重复链接`);
   }
 
+  function exportJson() {
+    if (!db) {
+      return;
+    }
+
+    const blob = new Blob([JSON.stringify(db, null, 2)], {
+      type: "application/json;charset=utf-8",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const date = new Date().toISOString().slice(0, 10);
+    link.href = url;
+    link.download = `navigation-backup-${date}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    setMessage("JSON 导出完成");
+  }
+
+  function triggerImportJson() {
+    importJsonInputRef.current?.click();
+  }
+
+  async function importJsonFile(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      await mutate({ action: "replace", db: parsed }, "JSON 导入完成");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "JSON 导入失败");
+    }
+  }
+
   async function reorderGroups(bucket: LinkBucket, activeGroup: string, overGroup: string) {
     if (!db) {
       return;
@@ -328,6 +370,13 @@ export default function NavigationApp() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
+                <input
+                  ref={importJsonInputRef}
+                  type="file"
+                  accept="application/json,.json"
+                  className="hidden"
+                  onChange={importJsonFile}
+                />
                 <button
                   type="button"
                   onClick={() => db && mutate({ action: "replace", db: { ...db, settings: { ...db.settings, theme: db.settings.theme === "dark" ? "light" : "dark" } } }, "主题已切换")}
@@ -342,13 +391,20 @@ export default function NavigationApp() {
                 >
                   下载插件
                 </a>
-                <a
-                  href="/api/navigation"
-                  target="_blank"
+                <button
+                  type="button"
+                  onClick={exportJson}
                   className="rounded-lg border border-black/10 bg-white/70 px-4 py-2 text-sm font-medium text-stone-800 transition hover:bg-white dark:border-white/10 dark:bg-white/10 dark:text-white"
                 >
                   导出 JSON
-                </a>
+                </button>
+                <button
+                  type="button"
+                  onClick={triggerImportJson}
+                  className="rounded-lg border border-black/10 bg-white/70 px-4 py-2 text-sm font-medium text-stone-800 transition hover:bg-white dark:border-white/10 dark:bg-white/10 dark:text-white"
+                >
+                  导入 JSON
+                </button>
               </div>
             </header>
 
