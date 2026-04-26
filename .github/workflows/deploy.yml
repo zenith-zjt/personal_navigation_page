@@ -53,6 +53,5 @@ jobs:
           key: ${{ secrets.REMOTE_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.REMOTE_PATH }}
-            docker compose pull
-            docker compose up -d
+            docker compose up -d --pull always --force-recreate
             docker image prune -f
