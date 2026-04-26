@@ -1,10 +1,11 @@
+version: '3.8'
+
 services:
-  personal-navigation:
-    build: .
+  nextjs-app:
+    image: zenithzjt/personal_navigation_page:latest
+    container_name: personal_navigation_page
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: production
-    volumes:
-      - ./data:/app/data
-    restart: unless-stopped
+      - NODE_ENV=production
