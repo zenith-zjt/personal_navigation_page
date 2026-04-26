@@ -9,3 +9,8 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+    volumes:
+      - app_data:/app/data
+
+volumes:
+  app_data:   # 声明命名卷
